@@ -1,39 +1,68 @@
+:root {
+    --primary-bg: #2c3e50;
+    --secondary-bg: #34495e;
+    --text-color: #ecf0f1;
+    --button-bg: #3498db;
+    --button-hover: #2980b9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-    margin: 0;
-    padding: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    user-select: none;
 }
 
 .calculator {
-    background-color: #fff;
+    width: 400px;
+    background: var(--primary-bg);
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    width: 350px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
     padding: 20px;
-    text-align: center;
+    color: var(--text-color);
+    position: relative;
+}
+
+.display-container {
+    background: var(--secondary-bg);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    position: relative;
 }
 
 #display {
     width: 100%;
     height: 80px;
-    font-size: 2em;
+    font-size: 2.5em;
     text-align: right;
-    margin-bottom: 10px;
     padding: 10px;
+    background: transparent;
     border: none;
-    background-color: #f1f3f4;
-    border-radius: 10px;
+    color: var(--text-color);
+    outline: none;
+}
+
+#history {
+    position: absolute;
+    top: -25px;
+    right: 10px;
+    font-size: 0.7em;
+    color: #bdc3c7;
 }
 
 .buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 }
 
@@ -43,31 +72,42 @@ button {
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.number {
-    background-color: #e0e0e0;
-    color: #333;
-}
-
-.operator {
-    background-color: #f0ad4e;
+    background: var(--button-bg);
     color: white;
-}
-
-.special {
-    background-color: #5bc0de;
-    color: white;
-}
-
-.equal {
-    background-color: #5cb85c;
-    color: white;
-    grid-column: span 2;
+    position: relative;
+    overflow: hidden;
 }
 
 button:hover {
-    opacity: 0.8;
+    background: var(--button-hover);
     transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.number { background-color: #2c3e50; }
+.operator { background-color: #e74c3c; }
+.scientific { background-color: #27ae60; }
+.memory { background-color: #f39c12; }
+.special { background-color: #8e44ad; }
+
+.theme-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.memory-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.8em;
+    color: #bdc3c7;
 }
