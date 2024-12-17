@@ -1,51 +1,66 @@
-// Global variables
-let memory = 0;
+let memory = 0; 
 let angleMode = 'DEG';
 
-// DOM Element Selections
 const display = document.getElementById('display');
 const history = document.getElementById('history');
 const memoryIndicator = document.getElementById('memory-indicator');
 const modeIndicator = document.getElementById('mode-indicator');
 
-// Input Function
+function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function calculateTrigFunction(func, value) {
+    // Convert to radians if in DEG mode
+    const processedValue = angleMode === 'DEG' ? toRadians(value) : value;
+    
+    switch(func) {
+        case 'sin':
+            return Math.sin(processedValue);
+        case 'cos':
+            return Math.cos(processedValue);
+        case 'tan':
+            return Math.tan(processedValue);
+        default:
+            throw new Error('Invalid trigonometric function');
+    }
+}
+
 function appendToDisplay(value) {
-    // Advanced input validation
     const lastChar = display.value.slice(-1);
     const operators = ['+', '-', '*', '/', '^'];
-    
+
     if (operators.includes(value) && operators.includes(lastChar)) {
         display.value = display.value.slice(0, -1);
     }
-    
+
     display.value += value;
 }
 
-// Calculation Function
 function calculate() {
     try {
         let expr = display.value;
-        
-        // Replace trigonometric functions with Math equivalents
-        expr = expr.replace(/sin\(/g, 'Math.sin(');
-        expr = expr.replace(/cos\(/g, 'Math.cos(');
-        expr = expr.replace(/tan\(/g, 'Math.tan(');
+
+        // Replace trigonometric functions with custom calculation
+        expr = expr.replace(/sin\(([^)]+)\)/g, (match, p1) => {
+            return calculateTrigFunction('sin', parseFloat(p1));
+        });
+
+        expr = expr.replace(/cos\(([^)]+)\)/g, (match, p1) => {
+            return calculateTrigFunction('cos', parseFloat(p1));
+        });
+
+        expr = expr.replace(/tan\(([^)]+)\)/g, (match, p1) => {
+            return calculateTrigFunction('tan', parseFloat(p1));
+        });
+
+        // Replace other scientific functions
         expr = expr.replace(/log\(/g, 'Math.log10(');
         expr = expr.replace(/ln\(/g, 'Math.log(');
         expr = expr.replace(/√\(/g, 'Math.sqrt(');
         expr = expr.replace(/\^/g, '**');
 
-        // Convert to radians if in DEG mode
-        if (angleMode === 'DEG') {
-            expr = expr.replace(/sin\(/g, 'Math.sin(Math.PI/180 * ');
-            expr = expr.replace(/cos\(/g, 'Math.cos(Math.PI/180 * ');
-            expr = expr.replace(/tan\(/g, 'Math.tan(Math.PI/180 * ');
-        }
-
-        // Add to history
         history.textContent = display.value + ' =';
-        
-        // Calculate and display result
         const result = eval(expr);
         display.value = Number(result).toFixed(8);
     } catch (error) {
@@ -54,13 +69,11 @@ function calculate() {
     }
 }
 
-// Display Management Functions
 function clearDisplay() {
     display.value = '';
     history.textContent = '';
 }
 
-// Memory Functions
 function memoryStore() {
     memory = parseFloat(display.value) || 0;
     memoryIndicator.textContent = `M: ${memory}`;
@@ -84,7 +97,7 @@ function memoryClear() {
     memory = 0;
     memoryIndicator.textContent = 'M: Empty';
 }
-s
+
 function toggleAngleMode() {
     angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
     modeIndicator.textContent = angleMode;
@@ -110,12 +123,11 @@ function toggleTheme() {
     root.setAttribute('data-theme', nextTheme);
 }
 
-// Keyboard Support
 document.addEventListener('keydown', (event) => {
     const key = event.key;
-    const validKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
+    const validKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                        '+', '-', '*', '/', '.', 'Enter', 'Backspace', 'Escape'];
-    
+
     if (validKeys.includes(key)) {
         event.preventDefault();
         switch(key) {
